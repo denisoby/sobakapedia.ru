@@ -1,0 +1,282 @@
+# Translation of Stable (latest release) in Russian
+# This file is distributed under the same license as the Stable (latest release) package.
+msgid ""
+msgstr ""
+"PO-Revision-Date: 2015-10-30 02:24:38+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: GlotPress/1.0-alpha-1100\n"
+"Project-Id-Version: Stable (latest release)\n"
+
+#: controller/SBTT_AdminMenuController.php:111
+msgid "Settings"
+msgstr "Настройки"
+
+#: controller/SBTT_AdminMenuController.php:29
+msgid "Scroll Back to Top Settings"
+msgstr "Настройки прокрутки вверх"
+
+#. #-#-#-#-#  tmp-scroll-back-to-top.pot (Scroll Back to Top 1.1.3)  #-#-#-#-#
+#. Plugin Name of the plugin/theme
+#: controller/SBTT_AdminMenuController.php:30 scroll-back-to-top.php:13
+msgid "Scroll Back to Top"
+msgstr "Прокрутка вверх"
+
+#: controller/SBTT_AdminMenuController.php:151 model/SBTT_Options.php:34
+msgid "Visibility"
+msgstr "Видимость"
+
+#: controller/SBTT_AdminMenuController.php:157 model/SBTT_Options.php:72
+msgid "Button Appearance"
+msgstr "Внешний вид кнопки"
+
+#: controller/SBTT_AdminMenuController.php:163 model/SBTT_Options.php:150
+msgid "Button Location"
+msgstr "Расположение кнопки"
+
+#: model/SBTT_Options.php:35
+msgid "Button visibility status options"
+msgstr "Настройки статуса видимости кнопки"
+
+#: model/SBTT_Options.php:44
+msgid "Preview Mode"
+msgstr "Предпросмотр"
+
+#: model/SBTT_Options.php:50
+msgid "Minimum Browser Resolution"
+msgstr "Минимальное разрешение браузера"
+
+#: model/SBTT_Options.php:60
+msgid "Maximum Browser Resolution"
+msgstr "Максимальное разрешение браузера"
+
+#: model/SBTT_Options.php:73
+msgid "Change the look and feel of the scroll to top button"
+msgstr "Измените внешний вид кнопки прокрутки вверх"
+
+#: model/SBTT_Options.php:76
+msgid "Width"
+msgstr "Ширина"
+
+#: model/SBTT_Options.php:81 model/SBTT_Options.php:91
+#: model/SBTT_Options.php:143
+msgid "px"
+msgstr "px"
+
+#: model/SBTT_Options.php:86
+msgid "Height"
+msgstr "Высота"
+
+#: model/SBTT_Options.php:96
+msgid "Background Color"
+msgstr "Цвет фона"
+
+#: model/SBTT_Options.php:128
+msgid "Opacity"
+msgstr "Прозрачность"
+
+#: model/SBTT_Options.php:133
+msgid "%"
+msgstr "%"
+
+#: model/SBTT_Options.php:138
+msgid "Border Radius"
+msgstr "Радиус скругления"
+
+#: model/SBTT_Options.php:154
+msgid "Horizontal Alignment"
+msgstr "По горизонтали"
+
+#: model/SBTT_Options.php:159
+msgid "Left"
+msgstr "Слева"
+
+#: model/SBTT_Options.php:160
+msgid "Center"
+msgstr "В центре"
+
+#: model/SBTT_Options.php:161
+msgid "Right"
+msgstr "Справа"
+
+#: model/SBTT_Options.php:166
+msgid "Vertical Alignment"
+msgstr "По вертикали"
+
+#: model/SBTT_Options.php:171
+msgid "Top"
+msgstr "Сверху"
+
+#: model/SBTT_Options.php:172
+msgid "Bottom"
+msgstr "Снизу"
+
+#: model/SBTT_Options.php:177
+msgid "Horizontal Distance from Edge"
+msgstr "Горизонтальная дистанция от края"
+
+#: model/SBTT_Options.php:187
+msgid "Vertical Distance from Edge"
+msgstr "Вертикальная дистанция от края"
+
+#: model/SBTT_Options.php:203
+msgid "Label Type"
+msgstr "Вид кнопки"
+
+#: model/SBTT_Options.php:224
+msgid "Icon Size"
+msgstr "Размер иконки"
+
+#: model/SBTT_Options.php:238
+msgid "Custom Label Text"
+msgstr "Ваш текст на кнопке"
+
+#: model/SBTT_Options.php:244
+msgid "Font Size"
+msgstr "Размер шрифта"
+
+#: model/SBTT_Options.php:269
+msgid "Visibility Duration"
+msgstr "Длительность видимости"
+
+#: model/SBTT_Options.php:280
+msgid "Fade Duration"
+msgstr "Длительность исчезновения"
+
+#: view/framework/admin/settings.php:35
+msgid "Are you sure you want to restore defualt settings?  This will erase all current settings"
+msgstr "Вы уверены, что хотите восстановить настройки по умолчанию? Это сбросит все текущие настройки."
+
+#. Plugin URI of the plugin/theme
+msgid "http://www.webtipblog.com/scroll-back-top-wordpress-plugin/"
+msgstr "http://www.webtipblog.com/scroll-back-top-wordpress-plugin/"
+
+#. Author of the plugin/theme
+msgid "Joe Sexton"
+msgstr "Joe Sexton"
+
+#. Author URI of the plugin/theme
+msgid "http://www.josephmsexton.com"
+msgstr "http://www.josephmsexton.com"
+
+#: model/SBTT_Options.php:296
+msgid "Extra CSS"
+msgstr "Дополнительные стили CSS"
+
+#. Description of the plugin/theme
+msgid "Adds a scroll to top button"
+msgstr "Добавляет кнопку прокрутки вверх"
+
+#: model/SBTT_Options.php:219
+msgid "Custom Text"
+msgstr "Произвольный текст"
+
+#: controller/SBTT_AdminMenuController.php:169 model/SBTT_Options.php:199
+msgid "Button Label"
+msgstr "Текст кнопки"
+
+#: controller/SBTT_AdminMenuController.php:175 model/SBTT_Options.php:255
+msgid "Animation Options"
+msgstr "Настройки анимации"
+
+#: controller/SBTT_AdminMenuController.php:181 model/SBTT_Options.php:292
+msgid "Advanced Options"
+msgstr "Расширенные настройки"
+
+#: model/SBTT_Options.php:104
+msgid "Background Hover Color"
+msgstr "Цвет фона при наведении курсора"
+
+#: model/SBTT_Options.php:112
+msgid "Foreground Color"
+msgstr "Цвет текста"
+
+#: model/SBTT_Options.php:120
+msgid "Foreground Hover Color"
+msgstr "Цвет текста при наведении курсора"
+
+#: framework/JmsAdminSettingsPage.php:393
+msgid "You do not have sufficient permissions to access this page."
+msgstr "У вас недостаточно полномочий для доступа к этой странице."
+
+#: model/SBTT_Options.php:38
+msgid "Status"
+msgstr "Статус"
+
+#: controller/SBTT_AdminMenuController.php:129
+msgid "Wordpress Plugin Page"
+msgstr "Страница в каталоге WordPress"
+
+#: controller/SBTT_AdminMenuController.php:128
+msgid "Design Inspiration"
+msgstr "Идеи дизайна"
+
+#: controller/SBTT_AdminMenuController.php:145
+msgid "Overview"
+msgstr "Обзор"
+
+#: controller/SBTT_AdminMenuController.php:187
+msgid "Troubleshooting"
+msgstr "Решение проблем"
+
+#: model/SBTT_Options.php:259
+msgid "Scroll Duration"
+msgstr "Длительность прокрутки"
+
+#: model/SBTT_Options.php:43
+msgid "Publicly Visible"
+msgstr "Видна всем"
+
+#: model/SBTT_Options.php:45
+msgid "Disabled"
+msgstr "Выключена"
+
+#: model/SBTT_Options.php:55
+msgid "px - smallest browser resolution the scroll button should appear on"
+msgstr "px — минимальное разрешение браузера, при котором должна появляться кнопка"
+
+#: model/SBTT_Options.php:65
+msgid "px - largest browser resolution the scroll button should appear on"
+msgstr "px — максимальное разрешение браузера, при котором должна появляться кнопка"
+
+#: model/SBTT_Options.php:151
+msgid "Change where the button is located on the page"
+msgstr "Укажите, в каком месте страницы должна выводиться кнопка"
+
+#: model/SBTT_Options.php:256
+msgid "Change animation options"
+msgstr "Измените настройки анимации"
+
+#: model/SBTT_Options.php:293
+msgid "Advanced options, this requires some knowledge of css to use."
+msgstr "Дополнительные настройки — на случай, если вы знакомы с CSS."
+
+#: model/SBTT_Options.php:264
+msgid "ms - this is how long it takes to scroll back to the top after the button has been pressed"
+msgstr "ms — задержка прокрутки вверх после нажатия кнопки"
+
+#: model/SBTT_Options.php:285
+msgid "ms - this is how long it takes for the transition to fade the button in and out"
+msgstr "ms — длительность перехода появления и исчезновения кнопки"
+
+#: model/SBTT_Options.php:182 model/SBTT_Options.php:192
+msgid "px margin"
+msgstr "px — внешний отступ"
+
+#: model/SBTT_Options.php:200
+msgid "Change what appears on the button"
+msgstr "Выберите, что должно отображаться на кнопке"
+
+#: model/SBTT_Options.php:249
+msgid "px - Using 0px will auto-size text to fit the button"
+msgstr "px — при использовании 0px текст подстраивается под размер кнопки"
+
+#: model/SBTT_Options.php:274
+msgid ""
+"ms - if set to 0 the button will never time out,\n"
+"                              otherwise the button will disappear after the specified time"
+msgstr ""
+"ms — при значении 0 кнопка будет отображаться всегда, \n"
+"в противном случае кнопка исчезнет после указанного времени"
