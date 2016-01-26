@@ -39,6 +39,14 @@ function remove_contributor_delete_posts() {
 	$role->remove_cap( 'delete_posts' );
 }
 
+// remove image attributes and [CAPTION]
+function remove_width_attribute( $html ) {
+   $html = preg_replace( '/(width|height|alt|class)="[^"]*?"\s/', "", $html );
+   return $html;
+}
+
+add_filter( 'image_send_to_editor', 'remove_width_attribute', 10 );
+
 /**
  * Twenty Sixteen only works in WordPress 4.4 or later.
  */
