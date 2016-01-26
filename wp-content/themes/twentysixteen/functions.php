@@ -32,6 +32,13 @@ function allow_contributor_uploads() {
 	$contributor->add_cap('upload_files');
 }
 
+add_action('admin_init', 'remove_contributor_delete_posts');
+
+function remove_contributor_delete_posts() {
+	$role = get_role( 'contributor' );
+	$role->remove_cap( 'delete_posts' );
+}
+
 /**
  * Twenty Sixteen only works in WordPress 4.4 or later.
  */
