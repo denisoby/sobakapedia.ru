@@ -70,6 +70,7 @@ function appthemes_add_quicktags() {
 	QTags.addButton( 'eg_ol_simple', 'ol', '<ol>\n', '\n</ol>', 'none', 'OL simple tag', 9 );
 	QTags.addButton( 'eg_li_simple', 'li', '<li><p>', '</p></li>', 'none', 'LI simple tag', 10 );
 	QTags.addButton( 'eg_video_youtube', 'Видео', '[embed]', '[/embed]', 'none', 'Youtube video tag', 11 );
+	QTags.addButton( 'eg_block_quotes', 'Цитата', '<blockquote>', '</blockquote>', 'none', 'Blockquote tag', 12 );
     </script>
 <?php
     }

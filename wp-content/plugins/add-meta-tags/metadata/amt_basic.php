@@ -76,7 +76,7 @@ function amt_add_basic_metadata_head( $post, $attachments, $embedded_media, $opt
     // Store base robots options
     $robots_options = array();
 
-    if ( $do_noodp_description && ( is_front_page() || is_singular() ) ) {
+    if ( $do_noodp_description && ( is_front_page() || is_singular() || is_category() || is_tag() || is_tax() || is_author() ) ) {
         // Add NOODP on posts and pages
         $robots_options[] = 'noodp';
         $robots_options[] = 'noydir';
@@ -92,12 +92,22 @@ function amt_add_basic_metadata_head( $post, $attachments, $embedded_media, $opt
         $full_metatags_as_string .= PHP_EOL;
     }
 
-    // Post specific full meta tags
+    // Full meta tags
     if ( is_singular() || amt_is_static_front_page() || amt_is_static_home() ) {
         // per post full meta tags
         $full_metatags_for_content = amt_get_post_meta_full_metatags( $post->ID );
         $full_metatags_for_content = html_entity_decode( stripslashes( $full_metatags_for_content ) );
         $full_metatags_as_string .= apply_filters('amt_full_metatags_post', $full_metatags_for_content);
+    } elseif ( is_category() || is_tag() || is_tax() ) {
+        // Term specific full meta tags ($post is a term object)
+        $full_metatags_for_term = amt_get_term_meta_full_metatags( $post->term_id );
+        $full_metatags_for_term = html_entity_decode( stripslashes( $full_metatags_for_term ) );
+        $full_metatags_as_string .= apply_filters('amt_full_metatags_term', $full_metatags_for_term);
+    } elseif ( is_author() ) {
+        // User specific full meta tags ($post is a user object)
+        $full_metatags_for_user = amt_get_user_meta_full_metatags( $post->ID );
+        $full_metatags_for_user = html_entity_decode( stripslashes( $full_metatags_for_user ) );
+        $full_metatags_as_string .= apply_filters('amt_full_metatags_term', $full_metatags_for_user);
     }
 
     // Sanitize
@@ -184,6 +194,32 @@ function amt_add_basic_metadata_head( $post, $attachments, $embedded_media, $opt
                 }
             }
 
+            // Process the PAGEINFO variable.
+            // If the current page is the 1st page of any archive or of multipage content,
+            // PAGEINFO is just stripped. For subsequent pages of archives or multipage
+            // content, PAGEINFO is replaced with page based path (page/N/ for archives or N/ for multipage content)
+            //
+            // For paginated archives or paginated main page with latest posts.
+            $has_paging_info = false;
+            if ( is_paged() ) {
+                $paged = get_query_var( 'paged' );  // paged
+                if ( $paged && $paged >= 2 ) {
+                    $single_meta_tag = str_replace('PAGEINFO', 'page/' . $paged . '/', $single_meta_tag);
+                    $has_paging_info = true;
+                }
+            // For a Post or Page that has been divided into pages using the <!--nextpage--> QuickTag
+            } else {
+                $paged = get_query_var( 'page' );  // page
+                if ( $paged && $paged >= 2 ) {
+                    $single_meta_tag = str_replace('PAGEINFO', $paged . '/', $single_meta_tag);
+                    $has_paging_info = true;
+                }
+            }
+            // If this is not paged, strip PAGEINFO
+            if ( $has_paging_info === false ) {
+                $single_meta_tag = str_replace('PAGEINFO', '', $single_meta_tag);
+            }
+
             // Process custom canonical link
             // If a rel="canonical" meta tags exists, we deactivate WordPress' 'rel_canonical' action,
             // Since it is assumed that a custom canonical link has been added.
@@ -247,7 +283,12 @@ function amt_add_basic_metadata_head( $post, $attachments, $embedded_media, $opt
     }
     // Add robot_options filtering
     $robots_options = apply_filters( 'amt_robots_options', $robots_options );
-    $robots_options = array_unique( $robots_options, SORT_STRING );
+    if ( version_compare( PHP_VERSION, '5.3', '<' ) ) {
+        // The flag is not supported
+        $robots_options = array_unique( $robots_options );
+    } else {
+        $robots_options = array_unique( $robots_options, SORT_STRING );
+    }
     if ( ! empty( $robots_options ) ) {
         $metadata_arr['basic:robots'] = '<meta name="robots" content="' . esc_attr( implode(',', $robots_options) ) . '" />';
     }

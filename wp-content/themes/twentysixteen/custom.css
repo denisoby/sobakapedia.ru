@@ -1,0 +1,98 @@
+.site-header{
+	padding-top: 0;
+	padding-bottom: 1em;
+}
+.header-image{
+	margin: 0;
+}
+em {
+	font-weight: 700;
+}
+ol {
+    counter-reset:li; /* Initiate a counter */
+    margin-left:0; /* Remove the default left margin */
+    padding-left:0; /* Remove the default left padding */
+}
+ol > li {
+    position:relative; /* Create a positioning context */
+    margin:0 0 6px 2em; /* Give each list item a left margin to make room for the numbers */
+    padding:4px 8px; /* Add some spacing around the content */
+    list-style:none; /* Disable the normal item numbering */
+    border-top:2px solid #666;
+    background:#f6f6f6;
+}
+ol > li:before {
+    content:counter(li); /* Use the counter as content */
+    counter-increment:li; /* Increment the counter by 1 */
+    /* Position and style the number */
+    position:absolute;
+    top:-2px;
+    left:-2em;
+    -moz-box-sizing:border-box;
+    -webkit-box-sizing:border-box;
+    box-sizing:border-box;
+    width:2em;
+    /* Some space between the number and the content in browsers that support
+       generated content but not positioning it (Camino 2 is one example) */
+    margin-right:8px;
+    padding:4px;
+    border-top:2px solid #666;
+    color:#fff;
+    background:#666;
+    font-weight:bold;
+    font-family:"Helvetica Neue", Arial, sans-serif;
+    text-align:center;
+}
+ul{
+	padding-left: 2.5em;
+	list-style-type: square;
+}
+ul li p{
+	margin-bottom: 1em;
+}
+ol li p em, ul li p em{
+	display: block;
+}
+
+blockquote{
+  display:block;
+  background: #f9f9f9;
+  padding: 15px 20px 15px 45px;
+  margin: 0 0 20px;
+  position: relative;
+
+  color: #1a1a1a;  
+
+  font-size: 16px;
+  line-height: 1.2;
+
+  text-align: justify;
+  
+  border-left: 15px solid #ccc;
+  border-right: 2px solid #ccc;
+  
+  -moz-box-shadow: 2px 2px 15px #ccc;
+  -webkit-box-shadow: 2px 2px 15px #ccc;
+  box-shadow: 2px 2px 15px #ccc;
+}
+
+blockquote::before{
+  content: "\201C"; /*Unicode for Left Double Quote*/
+  
+  font-size: 60px;
+  font-weight: bold;
+  color: #ccc;
+  
+  position: absolute;
+  left: 10px;
+  top:5px;
+}
+
+blockquote::after{
+  /*Reset to make sure*/
+  content: "";
+}
+
+blockquote p{
+  padding-left: 1em;
+}

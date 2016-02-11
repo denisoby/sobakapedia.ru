@@ -132,10 +132,16 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
                     $metadata_arr[] = '<meta name="twitter:description" content="' . esc_attr( amt_process_paged( $site_description ) ) . '" />';
                 }
                 // Image. Use the default image (if set).
-                if ( ! empty( $options["default_image_url"] ) ) {
-                    $image_url = apply_filters( 'amt_twitter_cards_image_url_index', $options["default_image_url"] );
-                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $image_url ) . '" />';
+                $image_data = amt_get_default_image_data();
+                if ( ! empty($image_data) ) {
+                    $image_size = apply_filters( 'amt_image_size_index', 'full' );
+                    $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                    if ( ! empty($image_meta_tags) ) {
+                        $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                    }
                 }
+                //$image_url = apply_filters( 'amt_twitter_cards_image_url_index', $options["default_image_url"] );
+                //$metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $image_url ) . '" />';
             }
 
         // Taxonomy archives
@@ -185,19 +191,38 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
                     $metadata_arr[] = '<meta name="twitter:description" content="' . esc_attr( amt_process_paged( $description_content ) ) . '" />';
                 }
                 // Image
-                // Use a user defined image via filter. Otherwise use default image.
-                // First filter using a term/taxonomy agnostic filter name.
-                $taxonomy_image_url = apply_filters( 'amt_taxonomy_force_image_url', '', $tax_term_object );
-                if ( empty($taxonomy_image_url) ) {
-                    // Second filter (term/taxonomy dependent).
-                    // Construct the filter name. Template: ``amt_taxonomy_image_url_TAXONOMYSLUG_TERMSLUG``
-                    $taxonomy_image_url_filter_name = sprintf( 'amt_taxonomy_image_url_%s_%s', $tax_term_object->taxonomy, $tax_term_object->slug);
-                    //var_dump($taxonomy_image_url_filter_name);
-                    // The default image, if set, is used by default.
-                    $taxonomy_image_url = apply_filters( $taxonomy_image_url_filter_name, $options["default_image_url"] );
-                }
-                if ( ! empty( $taxonomy_image_url ) ) {
-                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $taxonomy_image_url ) . '" />';
+                // Use an image from the 'Global image override' field.
+                // Otherwise, use a user defined image via filter.
+                // Otherwise use default image.
+                $image_data = amt_get_image_attributes_array( amt_get_term_meta_image_url( $tax_term_object->term_id ) );
+                if ( ! empty($image_data) ) {
+                    $image_size = apply_filters( 'amt_image_size_index', 'full' );
+                    $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                    if ( ! empty($image_meta_tags) ) {
+                        $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                    }
+                } else {
+                    // First filter using a term/taxonomy agnostic filter name.
+                    $taxonomy_image_url = apply_filters( 'amt_taxonomy_force_image_url', '', $tax_term_object );
+                    if ( empty($taxonomy_image_url) ) {
+                        // Second filter (term/taxonomy dependent).
+                        // Construct the filter name. Template: ``amt_taxonomy_image_url_TAXONOMYSLUG_TERMSLUG``
+                        $taxonomy_image_url_filter_name = sprintf( 'amt_taxonomy_image_url_%s_%s', $tax_term_object->taxonomy, $tax_term_object->slug);
+                        //var_dump($taxonomy_image_url_filter_name);
+                        // The default image, if set, is used by default.
+                        $taxonomy_image_url = apply_filters( $taxonomy_image_url_filter_name, $options["default_image_url"] );
+                    }
+                    if ( ! empty( $taxonomy_image_url ) ) {
+                        $image_data = amt_get_image_attributes_array( $taxonomy_image_url );
+                        if ( ! empty($image_data) ) {
+                            $image_size = apply_filters( 'amt_image_size_index', 'full' );
+                            $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                            if ( ! empty($image_meta_tags) ) {
+                                $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                            }
+                        }
+                        //$metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $taxonomy_image_url ) . '" />';
+                    }
                 }
             }
         
@@ -238,13 +263,21 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
                 if ( empty($posttype_image_url) ) {
                     // Second filter (post type dependent).
                     // Construct the filter name. Template: ``amt_posttype_image_url_POSTTYPESLUG``
-                    $taxonomy_image_url_filter_name = sprintf( 'amt_posttype_image_url_%s', $post_type_object->name);
-                    //var_dump($taxonomy_image_url_filter_name);
+                    $posttype_image_url_filter_name = sprintf( 'amt_posttype_image_url_%s', $post_type_object->name);
+                    //var_dump($posttype_image_url_filter_name);
                     // The default image, if set, is used by default.
-                    $posttype_image_url = apply_filters( $taxonomy_image_url_filter_name, $options["default_image_url"] );
+                    $posttype_image_url = apply_filters( $posttype_image_url_filter_name, $options["default_image_url"] );
                 }
                 if ( ! empty( $posttype_image_url ) ) {
-                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $posttype_image_url ) . '" />';
+                    $image_data = amt_get_image_attributes_array( $posttype_image_url );
+                    if ( ! empty($image_data) ) {
+                        $image_size = apply_filters( 'amt_image_size_index', 'full' );
+                        $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                        if ( ! empty($image_meta_tags) ) {
+                            $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                        }
+                    }
+                    //$metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $posttype_image_url ) . '" />';
                 }
             }
 
@@ -290,9 +323,17 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
 
         // First check if a global image override URL has been entered.
         // If yes, use this image URL and override all other images.
-        $global_image_override_url = amt_get_post_meta_image_url($post->ID);
-        if ( $image_metatags_added === false && ! empty( $global_image_override_url ) ) {
-            $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+        $image_data = amt_get_image_attributes_array( amt_get_post_meta_image_url($post->ID) );
+        if ( ! empty($image_data) ) {
+            $image_size = apply_filters( 'amt_image_size_product', 'full' );
+            $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+            if ( ! empty($image_meta_tags) ) {
+                $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+            }
+        //$global_image_override_url = amt_get_post_meta_image_url($post->ID);
+        //if ( $image_metatags_added === false && ! empty( $global_image_override_url ) ) {
+        //    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+
             // Images have been found.
             $image_metatags_added = true;
         }
@@ -316,8 +357,16 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
         }
 
         // If an image is still missing, then use the default image (if set).
-        if ( $image_metatags_added === false && ! empty( $options["default_image_url"] ) ) {
-            $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $options["default_image_url"] ) . '" />';
+        if ( $image_metatags_added === false ) {
+            $image_data = amt_get_default_image_data();
+            if ( ! empty($image_data) ) {
+                //$image_size = apply_filters( 'amt_image_size_index', 'full' );
+                $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                if ( ! empty($image_meta_tags) ) {
+                    $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                }
+            }
+            //$metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $options["default_image_url"] ) . '" />';
         }
 
         //
@@ -461,9 +510,17 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
 
         // First check if a global image override URL has been entered.
         // If yes, use this image URL and override all other images.
-        $global_image_override_url = amt_get_post_meta_image_url($post->ID);
-        if ( $image_metatags_added === false && ! empty( $global_image_override_url ) ) {
-            $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+        $image_data = amt_get_image_attributes_array( amt_get_post_meta_image_url($post->ID) );
+        if ( ! empty($image_data) ) {
+            $image_size = apply_filters( 'amt_image_size_content', 'full' );
+            $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+            if ( ! empty($image_meta_tags) ) {
+                $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+            }
+        //$global_image_override_url = amt_get_post_meta_image_url($post->ID);
+        //if ( $image_metatags_added === false && ! empty( $global_image_override_url ) ) {
+        //    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+
             // Images have been found.
             $image_metatags_added = true;
         }
@@ -542,8 +599,17 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
         }
 
         // If an image is still missing, then use the default image (if set).
-        if ( $image_metatags_added === false && ! empty( $options["default_image_url"] ) ) {
-            $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $options["default_image_url"] ) . '" />';
+        if ( $image_metatags_added === false ) {
+            $image_data = amt_get_default_image_data();
+            if ( ! empty($image_data) ) {
+                // Image size already set
+                //$image_size = apply_filters( 'amt_image_size_index', 'full' );
+                $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                if ( ! empty($image_meta_tags) ) {
+                    $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                }
+            }
+            //$metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $options["default_image_url"] ) . '" />';
         }
 
 
@@ -575,10 +641,18 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
 
         // First check if a global image override URL has been entered.
         // If yes, use this image URL and override all other images.
-        $global_image_override_url = amt_get_post_meta_image_url($post->ID);
-        if ( $image_metatags_added === false && ! empty( $global_image_override_url ) ) {
+        $image_data = amt_get_image_attributes_array( amt_get_post_meta_image_url($post->ID) );
+        if ( ! empty($image_data) ) {
+            $image_size = apply_filters( 'amt_image_size_content', 'full' );
+            $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+            if ( ! empty($image_meta_tags) ) {
+                $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+            }
+        //$global_image_override_url = amt_get_post_meta_image_url($post->ID);
+        //if ( $image_metatags_added === false && ! empty( $global_image_override_url ) ) {
             // Note 'image0'
-            $metadata_arr[] = '<meta name="twitter:image0" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+        //    $metadata_arr[] = '<meta name="twitter:image0" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+
             // Images have been found.
             $image_metatags_added = true;
         }
@@ -688,15 +762,43 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
                 $metadata_arr[] = '<meta name="twitter:player:stream:content_type" content="' . esc_attr( $mime_type ) . '" />';
                 //$metadata_arr[] = '<meta name="twitter:player:stream:content_type" content="video/mp4; codecs=&quot;avc1.42E01E1, mp4a.40.2&quot;">';
                 // twitter:image
-                $global_image_override_url = amt_get_post_meta_image_url($post->ID);
-                $preview_image_url = amt_embed_get_preview_image( $attachment->ID );
                 // First check if a global image override URL has been set in the post's metabox.
                 // If yes, use this image URL and override all other images.
-                if ( ! empty( $global_image_override_url ) ) {
-                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+                $image_data = amt_get_image_attributes_array( amt_get_post_meta_image_url($post->ID) );
+                if ( ! empty($image_data) ) {
+                    $image_size = apply_filters( 'amt_image_size_content', 'full' );
+                    $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                    if ( ! empty($image_meta_tags) ) {
+                        $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                    }
+                    //$global_image_override_url = amt_get_post_meta_image_url($post->ID);
+                    //if ( ! empty( $global_image_override_url ) ) {
+                    //    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+                // Else use the featured image if it exists
+                } elseif ( function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID) ) {
+                    // Set the image size to use
+                    $image_size = apply_filters( 'amt_image_size_content', 'full' );
+                    $main_size_meta = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), $image_size );
+                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $main_size_meta[0] ) . '" />';
+                    //if ( apply_filters( 'amt_extended_image_tags', true ) ) {
+                    //    $metadata_arr[] = '<meta name="twitter:image:width" content="' . esc_attr( $main_size_meta[1] ) . '" />';
+                    //    $metadata_arr[] = '<meta name="twitter:image:height" content="' . esc_attr( $main_size_meta[2] ) . '" />';
+                    //}
                 // Else use the attachment's featured image, if set.
-                } elseif ( ! empty( $preview_image_url ) ) {
-                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( amt_make_https( $preview_image_url ) ) . '" />';
+                } else {
+                    // Else use the attachment's featured image, if set.
+                    $image_data = amt_embed_get_preview_image( $attachment->ID );
+                    if ( ! empty($image_data) ) {
+                        $image_size = apply_filters( 'amt_image_size_content', 'full' );
+                        $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                        if ( ! empty($image_meta_tags) ) {
+                            $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                        }
+                    }
+                    //$preview_image_url = amt_embed_get_preview_image( $attachment->ID );
+                    //if ( ! empty( $preview_image_url ) ) {
+                    //    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( amt_make_https( $preview_image_url ) ) . '" />';
+                    //}
                 }
 
                 $audio_video_metatags_complete = true;
@@ -749,15 +851,44 @@ function amt_add_twitter_cards_metadata_head( $post, $attachments, $embedded_med
                 // twitter:player:height
                 $metadata_arr[] = sprintf( '<meta name="twitter:player:height" content="%d" />', esc_attr( $embedded_item['height'] ) );
                 // twitter:image
-                $global_image_override_url = amt_get_post_meta_image_url($post->ID);
                 // First check if a global image override URL has been set in the post's metabox.
                 // If yes, use this image URL and override all other images.
-                if ( ! empty( $global_image_override_url ) ) {
-                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $global_image_override_url ) . '" />';
-                // Else use the discovered preview image, if any.
-                } elseif ( ! empty( $embedded_item['thumbnail'] ) ) {
-                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $embedded_item['thumbnail'] ) . '" />';
+                $image_data = amt_get_image_attributes_array( amt_get_post_meta_image_url($post->ID) );
+                if ( ! empty($image_data) ) {
+                    $image_size = apply_filters( 'amt_image_size_content', 'full' );
+                    $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                    if ( ! empty($image_meta_tags) ) {
+                        $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                    }
+                    //$global_image_override_url = amt_get_post_meta_image_url($post->ID);
+                    //if ( ! empty( $global_image_override_url ) ) {
+                    //    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $global_image_override_url ) . '" />';
+                // Else use the featured image if it exists
+                } elseif ( function_exists('has_post_thumbnail') && has_post_thumbnail($post->ID) ) {
+                    // Set the image size to use
+                    $image_size = apply_filters( 'amt_image_size_content', 'full' );
+                    $main_size_meta = wp_get_attachment_image_src( get_post_thumbnail_id($post->ID), $image_size );
+                    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $main_size_meta[0] ) . '" />';
+                    //if ( apply_filters( 'amt_extended_image_tags', true ) ) {
+                    //    $metadata_arr[] = '<meta name="twitter:image:width" content="' . esc_attr( $main_size_meta[1] ) . '" />';
+                    //    $metadata_arr[] = '<meta name="twitter:image:height" content="' . esc_attr( $main_size_meta[2] ) . '" />';
+                    //}
+                // Else use the attachment's featured image, if set.
+                } else {
+                    $image_data = amt_get_image_attributes_array( $embedded_item['thumbnail'] );
+                    if ( ! empty($image_data) ) {
+                        $image_size = apply_filters( 'amt_image_size_content', 'full' );
+                        $image_meta_tags = amt_get_twitter_cards_image_metatags( $options, $image_data, $size=$image_size );
+                        if ( ! empty($image_meta_tags) ) {
+                            $metadata_arr = array_merge( $metadata_arr, $image_meta_tags );
+                        }
+                    }
                 }
+
+                // Else use the discovered preview image, if any.
+                //} elseif ( ! empty( $embedded_item['thumbnail'] ) ) {
+                //    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $embedded_item['thumbnail'] ) . '" />';
+                //}
 
                 //
                 $audio_video_metatags_complete = true;
@@ -791,4 +922,75 @@ function amt_get_twitter_cards_author_publisher_metatags( $options, $post ) {
     return $metadata_arr;
 }
 
+
+//
+// Return an array of Twitter Cards meta tags for an image attachment with the
+// provided post ID.
+// By default, returns metadata for the 'medium' sized version of the image.
+//
+function amt_get_twitter_cards_image_metatags( $options, $image_data, $size='medium' ) {
+    //
+    // $image_data can be:
+    //
+    // 1. An array with the following data:
+    //
+    //    'id'    => null,   // post ID of attachment
+    //    'url'   => null,
+    //    'width' => null,
+    //    'height' => null,
+    //    'type'  => null,
+    //
+    // 2. An attachment ID (integer)
+    //
+    $metadata_arr = array();
+    $image_id = null;
+
+    if ( is_array($image_data) && ! is_null($image_data['url']) ) {
+        // Here we process the image data as retrieved from the special notation of the image's URL.
+        // No size information is taken into account in this case.
+        // Image tags
+        $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url( $image_data['url'] ) . '" />';
+        if ( apply_filters( 'amt_extended_image_tags', true ) ) {
+            if ( ! is_null($image_data['width']) ) {
+                $metadata_arr[] = '<meta name="twitter:image:width" content="' . esc_attr( $image_data['width'] ) . '" />';
+            }
+            if ( ! is_null($image_data['height']) ) {
+                $metadata_arr[] = '<meta name="twitter:image:height" content="' . esc_attr( $image_data['height'] ) . '" />';
+            }
+        }
+
+        return $metadata_arr;
+
+    } elseif ( is_array($image_data) && is_numeric($image_data['id']) ) {
+        // The attachment ID exists in the array's 'id' item.
+        $image_id = absint( $image_data['id'] );
+    } elseif ( is_numeric($image_data) ) {
+        // Image data is the attachment ID (integer)
+        $image_id = absint( $image_data );
+    }
+
+    if ( empty($image_id) ) {
+        return $metadata_arr;
+    }
+
+    // Process the image attachment and generate meta tags.
+
+    //$image = get_post( $image_id );
+    //$image_meta = wp_get_attachment_metadata( $image->ID );   // contains info about all sizes
+    // We use wp_get_attachment_image_src() since it constructs the URLs
+    //$thumbnail_meta = wp_get_attachment_image_src( $image->ID, 'thumbnail' );
+    $main_size_meta = wp_get_attachment_image_src( $image_id, $size );
+    // Image tags
+    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( $main_size_meta[0] ) . '" />';
+    //if ( is_ssl() || ( ! is_ssl() && $options["has_https_access"] == "1" ) ) {
+    //    $metadata_arr[] = '<meta name="twitter:image" content="' . esc_url_raw( str_replace('http:', 'https:', $main_size_meta[0]) ) . '" />';
+    //}
+    if ( apply_filters( 'amt_extended_image_tags', true ) ) {
+        $metadata_arr[] = '<meta name="twitter:image:width" content="' . esc_attr( $main_size_meta[1] ) . '" />';
+        $metadata_arr[] = '<meta name="twitter:image:height" content="' . esc_attr( $main_size_meta[2] ) . '" />';
+        //$metadata_arr[] = '<meta name="twitter:image:type" content="' . esc_attr( get_post_mime_type( $image_id ) ) . '" />';
+    }
+
+    return $metadata_arr;
+}
 
