@@ -47,7 +47,7 @@ ul{
 	padding-left: 2.5em;
 	list-style-type: square;
 }
-ul li p{
+ul li p, ul li p{
 	margin-bottom: 1em;
 }
 ol li p em, ul li p em{
