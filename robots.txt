@@ -19,6 +19,7 @@ Disallow: */comment
 Disallow: */attachment
 Disallow: */page
 Disallow: /cgi-bin
+Disallow: /theme
 
 Allow: *.css*
 Allow: *.js*
